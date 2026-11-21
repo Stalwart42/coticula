@@ -20,7 +20,6 @@ const SEC = {
   "X-Frame-Options": "DENY",
   "Permissions-Policy": "camera=(), microphone=(), geolocation=()",
   "Strict-Transport-Security": "max-age=31536000",
-  "X-Robots-Tag": "noindex", // remove at public launch (also robots.txt + meta tags)
 };
 
 function res(body, type, extra = {}, status = 200) {
@@ -65,7 +64,7 @@ export default {
       case "/app.js": return res(A.js, "text/javascript; charset=utf-8", cache);
       case "/install.sh": return res(A.install, "text/x-shellscript; charset=utf-8", { "Cache-Control": "no-cache" });
       case "/dl/SHA256SUMS": return res(SUMS, "text/plain; charset=utf-8", { "Cache-Control": "no-cache" });
-      case "/robots.txt": return res("User-agent: *\nDisallow: /\n", "text/plain");
+      case "/robots.txt": return res("User-agent: *\nAllow: /\n", "text/plain");
       case "/api/waitlist": return waitlist(req, env);
     }
     if (p === "/dl/" + WHEEL_NAME || p === "/dl/latest.whl") {

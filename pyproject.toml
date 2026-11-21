@@ -7,6 +7,7 @@ name = "coticula"
 version = "0.1.0"
 description = "Test before you trust: security and quality scanner for MCP servers, agent skills, plugins and reusable code."
 readme = "README.md"
+license = {text = "MIT"}
 requires-python = ">=3.9"
 dependencies = []
 authors = [{ name = "Brent Willoughby" }]
