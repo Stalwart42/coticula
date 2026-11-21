@@ -1,0 +1,11 @@
+{
+  "name": "coticula",
+  "description": "Coticula scanner itself. Network is used only for the OSV.dev vulnerability lookup.",
+  "permissions": {
+    "network": ["api.osv.dev"],
+    "filesystem": "write",
+    "env": ["NO_COLOR", "GITHUB_STEP_SUMMARY"],
+    "subprocess": false
+  },
+  "ignore": ["site/**"]
+}

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Coticula — test before you trust</title>
+<meta name="description" content="Coticula scans MCP servers, agent skills, plugins and reusable code for leaked secrets, risky AI instructions, undeclared permissions and low-quality code.">
+<link rel="stylesheet" href="/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23111214'/%3E%3Cpath d='M5 21 L27 11' stroke='%23d4a849' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="wrap">
+  <nav><a class="brand" href="/">Coticula</a><span class="links"><a href="/docs">Docs</a><a href="#checks">Checks</a><a href="#waitlist">Waitlist</a></span></nav>
+
+  <header class="hero">
+    <div class="streak" aria-hidden="true"></div>
+    <h1>Test before<br>you trust.</h1>
+    <p class="say">koh-TIK-yoo-lah · Latin for <i>touchstone</i>, the stone assayers rubbed gold against to prove it real</p>
+    <p class="lede">Coticula scans MCP servers, agent skills, plugins and reusable code for the things a careful reviewer would catch — <em>before</em> you bolt them onto your project.</p>
+    <div class="cmd"><code id="install-cmd"><span class="p">$ </span>curl -fsSL https://coticula.kineticdevops.com/install.sh | sh</code><button class="copy" data-target="install-cmd" type="button">Copy</button></div>
+    <p class="alt">Then run <code>coticula scan .</code> · Runs locally — your code never leaves your machine. · <a href="/docs#install">Read the installer first</a> · v__VERSION__</p>
+  </header>
+
+  <section id="checks">
+    <h2>Five checks, one command</h2>
+    <p class="sub">Pattern-based and fast. Built for the new attack surface: text that tells an AI model what to do.</p>
+    <div class="grid">
+      <div class="card key"><h3>AI &amp; MCP risks<code>ai</code></h3><p>Instruction overrides, “don’t tell the user,” exfiltration requests and auto-approve prompts in skills, prompts and MCP tool descriptions. Invisible Unicode smuggling, decoded so you can read it.</p></div>
+      <div class="card key"><h3>Permission manifest<code>manifest</code></h3><p>Declare what a component touches — network, files, env, subprocesses. Coticula flags code that reaches further than it says.</p></div>
+      <div class="card"><h3>Secrets<code>secrets</code></h3><p>Anthropic, OpenAI, AWS, GitHub, Slack and Stripe keys, private keys, committed .env files, high-entropy hard-coded values. Always redacted in output.</p></div>
+      <div class="card"><h3>Vulnerable dependencies<code>deps</code></h3><p>Pinned Python and npm packages checked against OSV.dev. Unpinned versions flagged so what you scan is what you ship.</p></div>
+      <div class="card"><h3>Quality score<code>quality</code></h3><p>Tests that can’t fail, missing docs, placeholders, swallowed errors. A 0–100 score that keeps the slop out.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Earn the mark</h2>
+    <p class="sub">No high or critical findings earns the <b>Scanned</b> tier and a badge for your README. Higher tiers come with the catalog.</p>
+    <div class="flow"><span class="step">coticula scan .</span><span class="arrow">→</span><span class="step">fix findings</span><span class="arrow">→</span><span class="step">coticula badge .</span><span class="arrow">→</span><span class="step">ship with proof</span></div>
+    <div class="badge-demo">__BADGE_OK__ __BADGE_BAD__</div>
+    <div class="tiers">
+      <div class="card tier now"><div class="when">Available now</div><h3>Scanned</h3><p>Automated checks pass. Earned locally or in CI.</p></div>
+      <div class="card tier"><div class="when">With the catalog</div><h3>Reviewed</h3><p>Scanned, plus peer review by members with a track record.</p></div>
+      <div class="card tier"><div class="when">Later</div><h3>Certified</h3><p>Reviewed, plus a paid human audit and sandboxed runtime verification.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Where this is going</h2>
+    <p class="sub">The scanner is phase one of an open, vetted library of parts people can bolt onto their projects — so nobody has to build the same thing twice.</p>
+    <ul class="road">
+      <li><b>Now</b><span>Scanner CLI, CI integration, Scanned badge. Free.</span></li>
+      <li><b>Next</b><span>The catalog: a searchable library of vetted components, browsable by people and queryable by agents over MCP.</span></li>
+      <li><b>Then</b><span>The Collegium: a community of builders with requests and bounties, a reviewer guild, team plans and paid components.</span></li>
+    </ul>
+  </section>
+
+  <section id="waitlist">
+    <h2>Get early access</h2>
+    <p class="sub">Join the list for the catalog, private-repo scanning and the first Collegium seats.</p>
+    <form class="wait" id="wait" novalidate>
+      <input type="email" name="email" placeholder="you@example.com" required maxlength="200" aria-label="Email">
+      <select name="role" aria-label="What do you build?">
+        <option value="">What do you build?</option>
+        <option value="mcp">MCP servers / agent tools</option>
+        <option value="skills">Agent skills / prompts</option>
+        <option value="apps">Apps &amp; libraries</option>
+        <option value="security">Security / platform team</option>
+        <option value="other">Other</option>
+      </select>
+      <input class="hp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <button type="submit">Join</button>
+    </form>
+    <div id="wait-msg" role="status"></div>
+    <p class="fine">We store your email and the option you picked, nothing else. One email when there’s something to try. No sharing, easy removal.</p>
+  </section>
+
+  <footer><span>Coticula · a Kinetic DevOps project</span><span><a href="/docs">Docs</a> · <a href="/docs#limits">Limits</a> · v__VERSION__</span></footer>
+</div>
+<script src="/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,25 @@
+name: Coticula scan
+description: Test before you trust — scan MCP servers, agent skills and code for secrets, risky AI instructions, undeclared permissions and quality problems.
+branding:
+  icon: shield
+  color: orange
+inputs:
+  path:
+    description: Directory to scan
+    default: "."
+  fail-on:
+    description: Lowest severity that fails the job (low, medium, high, critical)
+    default: high
+  args:
+    description: Extra arguments for `coticula scan`
+    default: ""
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - shell: bash
+      run: pip install --quiet "${{ github.action_path }}"
+    - shell: bash
+      run: coticula scan "${{ inputs.path }}" --fail-on "${{ inputs.fail-on }}" ${{ inputs.args }}

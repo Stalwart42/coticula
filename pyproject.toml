@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "coticula"
+version = "0.1.0"
+description = "Test before you trust: security and quality scanner for MCP servers, agent skills, plugins and reusable code."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = []
+authors = [{ name = "Brent Willoughby" }]
+keywords = ["security", "scanner", "mcp", "agent-skills", "supply-chain", "secrets"]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Environment :: Console",
+  "Topic :: Security",
+  "Topic :: Software Development :: Quality Assurance",
+]
+
+[project.urls]
+Homepage = "https://coticula.kineticdevops.com"
+
+[project.scripts]
+coticula = "coticula.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

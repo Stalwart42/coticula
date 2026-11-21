@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Docs — Coticula</title>
+<link rel="stylesheet" href="/style.css">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23111214'/%3E%3Cpath d='M5 21 L27 11' stroke='%23d4a849' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
+</head>
+<body>
+<div class="wrap">
+  <nav><a class="brand" href="/">Coticula</a><span class="links"><a href="/docs">Docs</a><a href="/#waitlist">Waitlist</a></span></nav>
+  <div class="docs">
+    <aside>
+      <a href="#install">Install</a><a href="#usage">Usage</a><a href="#checks">Checks</a><a href="#manifest">Permission manifest</a>
+      <a href="#ci">CI</a><a href="#badge">Badge</a><a href="#ignore">Ignoring findings</a><a href="#privacy">Privacy</a><a href="#limits">Limits</a>
+    </aside>
+    <article>
+      <h1>Docs</h1>
+      <p>Coticula v__VERSION__ · Python 3.9+ · no dependencies.</p>
+
+      <h2 id="install">Install</h2>
+      <pre>curl -fsSL https://coticula.kineticdevops.com/install.sh | sh</pre>
+      <p>The installer downloads the wheel, checks its SHA-256, then installs with <code>pipx</code> (or <code>pip --user</code> if pipx is missing). It's short, so read it first:</p>
+      <pre>curl -fsSL https://coticula.kineticdevops.com/install.sh | less</pre>
+      <h3>Manual install</h3>
+      <pre>curl -fsSLO https://coticula.kineticdevops.com/dl/coticula-__VERSION__-py3-none-any.whl
+shasum -a 256 coticula-__VERSION__-py3-none-any.whl   # expect __SHA256__
+pipx install ./coticula-__VERSION__-py3-none-any.whl</pre>
+
+      <h2 id="usage">Usage</h2>
+      <pre>coticula scan [PATH]                  # text report, default: current directory
+coticula scan . --format json -o report.json
+coticula scan . --format markdown     # for PR comments and job summaries
+coticula scan . --fail-on medium      # stricter gate (default: high)
+coticula scan . --only ai --only secrets
+coticula scan . --exclude "examples/**"
+coticula scan . --offline             # skip the OSV.dev lookup
+coticula scan . --show-info           # include informational findings
+coticula init                         # write coticula.json from detected capabilities
+coticula badge . -o coticula.svg      # README badge</pre>
+      <table><tr><th>Exit code</th><th>Meaning</th></tr>
+        <tr><td><code>0</code></td><td>Pass: nothing at or above <code>--fail-on</code></td></tr>
+        <tr><td><code>1</code></td><td>Findings at or above <code>--fail-on</code></td></tr>
+        <tr><td><code>2</code></td><td>Usage or runtime error</td></tr></table>
+
+      <h2 id="checks">Checks</h2>
+      <h3><code>ai</code> — text that steers models</h3>
+      <p>Looks at agent instructions (<code>SKILL.md</code>, <code>CLAUDE.md</code>, <code>AGENTS.md</code>, files under <code>skills/</code>, <code>prompts/</code>, <code>.claude/</code>, <code>*.prompt</code>) and MCP server source, where tool names and descriptions are read by the model.</p>
+      <table>
+        <tr><th>Rule</th><th>Severity</th><th>Catches</th></tr>
+        <tr><td>unicode-tag-smuggling</td><td>critical</td><td>Invisible Unicode tag characters; the hidden text is decoded in the report</td></tr>
+        <tr><td>hidden-bidi-control</td><td>critical in code</td><td>Bidirectional overrides that make code read differently than it runs</td></tr>
+        <tr><td>hidden-zero-width</td><td>medium</td><td>Zero-width characters</td></tr>
+        <tr><td>instruction-override</td><td>high</td><td>Attempts to cancel the model's earlier instructions</td></tr>
+        <tr><td>conceal-from-user</td><td>high</td><td>Instructions to hide something from the user</td></tr>
+        <tr><td>exfiltration-instruction</td><td>high</td><td>Requests to send credentials, keys or tokens somewhere</td></tr>
+        <tr><td>auto-approve-instruction</td><td>high</td><td>Requests to skip confirmation or bypass approvals</td></tr>
+        <tr><td>hidden-comment-instruction</td><td>high</td><td>Instruction-like HTML comments (hidden when rendered)</td></tr>
+        <tr><td>role-hijack</td><td>medium</td><td>Fake system prompts and role changes</td></tr>
+        <tr><td>credential-path-reference</td><td>medium</td><td>Instructions that mention SSH keys, cloud credentials, etc.</td></tr>
+        <tr><td>pipe-to-shell</td><td>medium</td><td>curl/wget piped into a shell, inside agent instructions</td></tr>
+        <tr><td>encoded-blob</td><td>medium</td><td>Long base64 blobs that can't be reviewed by reading</td></tr>
+      </table>
+      <p>In ordinary documentation the same phrases are reported as <code>low</code>, since a README describing an attack isn't an attack.</p>
+      <h3><code>secrets</code></h3>
+      <p>Anthropic, OpenAI, AWS, GitHub (classic and fine-grained), Slack, Stripe live and Google API keys; PEM private keys; committed <code>.env</code> files; high-entropy values assigned to names like <code>api_key</code> or <code>password</code>. Obvious placeholders are skipped. Values are always redacted.</p>
+      <h3><code>deps</code></h3>
+      <p>Reads <code>requirements*.txt</code>, <code>pyproject.toml</code> (Python 3.11+), <code>package-lock.json</code> and <code>package.json</code>. Exact versions are checked against <a href="https://osv.dev">OSV.dev</a>; ranges and wildcards are flagged as unpinned.</p>
+      <h3><code>manifest</code></h3>
+      <p>Detects network access, subprocesses, environment-variable reads, file writes and dynamic code (<code>eval</code>, <code>exec</code>, <code>pickle.loads</code>, <code>new Function</code>) in Python, JavaScript/TypeScript and shell. Test files are excluded. See <a href="#manifest">below</a>.</p>
+      <h3><code>quality</code></h3>
+      <p>Starts at 100 and deducts for: no README (−15), no tests (−25), no license (−5), tests that can't fail (−5 each), placeholders and swallowed errors (−2 each), files over 1,500 lines, and heavy TODO density.</p>
+
+      <h2 id="manifest">Permission manifest</h2>
+      <p>Put <code>coticula.json</code> at the project root. <code>coticula init</code> writes one from what it detects; then narrow it by hand.</p>
+      <pre>{
+  "name": "my-mcp-server",
+  "permissions": {
+    "network": ["api.github.com"],
+    "filesystem": "read",
+    "env": ["GITHUB_TOKEN"],
+    "subprocess": false
+  },
+  "ignore": ["tests/fixtures/**"]
+}</pre>
+      <p><code>network</code> and <code>env</code> take <code>true</code>, <code>false</code> or a list. In v__VERSION__ lists are documentation for reviewers; host-level enforcement arrives with sandboxed runs. <code>filesystem</code> is <code>none</code>, <code>read</code> or <code>write</code>. Code that uses a capability the manifest doesn't declare is a <b>high</b> finding.</p>
+
+      <h2 id="ci">CI</h2>
+      <h3>GitHub Actions</h3>
+      <pre>- uses: actions/setup-python@v5
+  with: { python-version: "3.12" }
+- run: |
+    curl -fsSL https://coticula.kineticdevops.com/install.sh | sh
+    coticula scan . --format markdown</pre>
+      <p>When <code>GITHUB_STEP_SUMMARY</code> is set, the markdown report is added to the job summary automatically.</p>
+      <h3>Local pre-push hook (no CI minutes)</h3>
+      <pre>printf '#!/bin/sh\ncoticula scan . --offline\n' &gt; .git/hooks/pre-push
+chmod +x .git/hooks/pre-push</pre>
+
+      <h2 id="badge">Badge</h2>
+      <pre>coticula badge . -o coticula.svg
+# README.md
+![Coticula](coticula.svg)</pre>
+      <p>The badge is generated locally and shows the tier and quality score. It's a claim you can re-verify, not a hosted certificate — anyone can run the same scan.</p>
+
+      <h2 id="ignore">Ignoring findings</h2>
+      <p>Add <code>coticula:ignore</code> in a comment on the line to silence it. Skip whole paths with <code>"ignore"</code> globs in <code>coticula.json</code> or <code>--exclude</code>. Ignores are visible in your code, so reviewers can see them.</p>
+
+      <h2 id="privacy">Privacy</h2>
+      <p>Scanning happens on your machine. The only network call is to OSV.dev, sending package names and versions (never code). <code>--offline</code> turns that off.</p>
+
+      <h2 id="limits">Limits</h2>
+      <p class="note">Coticula v__VERSION__ is static and pattern-based. It will miss things a determined attacker hides well, and it will sometimes flag safe code. <b>Scanned</b> means <i>passed these checks</i>, not <i>guaranteed safe</i>. Treat it as a strong first filter, not a replacement for review.</p>
+    </article>
+  </div>
+  <footer><span>Coticula · a Kinetic DevOps project</span><span><a href="/">Home</a> · v__VERSION__</span></footer>
+</div>
+<script src="/app.js" defer></script>
+</body>
+</html>
