@@ -108,3 +108,7 @@ Note: costs scale with submissions, not members — price publishers/teams, not 
 
 ## Parking lot
 - (add ideas here)
+
+## Trademark check (2026-11-21)
+- USPTO TSDR: one prior COTICULA registration (Reg. 3153212, class 009, "electronic devices for testing optical discs"), registered 2006, cancelled 2013 for no Section 8 filing. Unrelated goods, dead registration: low risk.
+- Still to do: live-record search in classes 009 and 042 (and close spellings); consider an intent-to-use filing via Monolithic LLC before heavy promotion. Not legal advice.
