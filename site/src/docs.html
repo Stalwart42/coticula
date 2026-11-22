@@ -20,6 +20,8 @@
       <p>Coticula v__VERSION__ · Python 3.9+ · no dependencies.</p>
 
       <h2 id="install">Install</h2>
+      <pre>pipx install coticula</pre>
+      <p>No pipx? <code>pip install --user coticula</code> works too. Or use the checksum-verified installer:</p>
       <pre>curl -fsSL https://coticula.kineticdevops.com/install.sh | sh</pre>
       <p>The installer downloads the wheel, checks its SHA-256, then installs with <code>pipx</code> (or <code>pip --user</code> if pipx is missing). It's short, so read it first:</p>
       <pre>curl -fsSL https://coticula.kineticdevops.com/install.sh | less</pre>
@@ -91,7 +93,7 @@ coticula badge . -o coticula.svg      # README badge</pre>
       <pre>- uses: actions/setup-python@v5
   with: { python-version: "3.12" }
 - run: |
-    curl -fsSL https://coticula.kineticdevops.com/install.sh | sh
+    pip install --quiet coticula
     coticula scan . --format markdown</pre>
       <p>When <code>GITHUB_STEP_SUMMARY</code> is set, the markdown report is added to the job summary automatically.</p>
       <h3>Local pre-push hook (no CI minutes)</h3>

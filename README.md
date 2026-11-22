@@ -3,9 +3,11 @@
 **Test before you trust.** Coticula (koh-TIK-yoo-lah, Latin for *touchstone*) scans MCP servers, agent skills, plugins and reusable code for the problems a careful reviewer would catch — before you bolt them onto your project.
 
 ```
-curl -fsSL https://coticula.kineticdevops.com/install.sh | sh
+pipx install coticula
 coticula scan .
 ```
+
+No pipx? `pip install --user coticula` works too. Prefer a checksum-verified installer? `curl -fsSL https://coticula.kineticdevops.com/install.sh | sh` (read it first).
 
 ## What it checks
 
@@ -62,7 +64,7 @@ Run it anywhere Python 3.9+ runs. On GitHub:
 - uses: actions/setup-python@v5
   with: { python-version: "3.12" }
 - run: |
-    curl -fsSL https://coticula.kineticdevops.com/install.sh | sh
+    pip install --quiet coticula
     coticula scan . --format markdown
 ```
 
